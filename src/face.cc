@@ -1,0 +1,78 @@
+#include <cstdlib>
+#include <cmath>
+#include <iostream>
+#include <string>
+#include "trm_subs.h"
+#include "trm_vec3.h"
+#include "trm_roche.h"
+
+/**
+ * 'face' computes the position and orientation of a face on either star in a binary assuming Roche geometry given 
+ * a direction, a reference radius and a potential. 
+ *
+ * \param q    the mass ratio = M2/M1.
+ * \param dirn the direction (unit) vector from the centre of mass of the secondary to the face in question.
+ * \param rref reference radius. This is a radius large enough to guarantee crossing of the reference potential. See ref_sphere
+ * \param pref reference potential
+ * \param acc  location accuracy (units of separation)
+ * \param star specifies which star, primary or secondary is under consideration.
+ * \param pvec position vector of centre of face (position vector in standard binary coordinates), returned
+ * \param dvec orientation vector perpendicular to face, returned
+ * \param r    distance from centre of mass of star, returned
+ * \param g    magnitude of gravity at face, returned
+ * \exception The routine throws exceptions if it cannot bracket the reference potential. This can occur if the reference radius fails to enclose
+ * the face in question, or if the face is so deep in the potential that the initial search fails to reach it. Finally if acc is set too low an
+ * exception may be thrown if too many binary chops occur. The behaviour at the L1 point is undefined so do not try to call it there.
+ */
+
+void Roche::face(double q, const Subs::Vec3& dirn, double rref, double pref, double acc, STAR star, Subs::Vec3& pvec, Subs::Vec3& dvec, double& r, double& g){
+
+  // Only difference the star makes is the centre of mass
+  const Subs::Vec3 cofm = (star == PRIMARY) ? Subs::Vec3(0.,0.,0.) : Subs::Vec3(1.,0.,0.);
+
+  // A check on the reference radius & potential
+  double tref = rpot(q, cofm + rref*dirn);
+  if(tref < pref)
+    throw Roche_Error("Roche::face error: point at reference radius = " + Subs::str(rref) + 
+		      " appears to be at lower potential = " + Subs::str(tref) + " than the reference = " + Subs::str(pref));
+
+  // Find r1 r2 such that r1 is below reference potential and r2 is above.
+  double r1 = rref/2, r2 = rref;
+  tref = pref + 1;
+
+  const int MAXSEARCH = 30;
+  for(int i=0; i<MAXSEARCH && tref > pref; i++){
+    r1   = r2/2;
+    tref = rpot(q, cofm + r1*dirn);
+    if(tref > pref)
+      r2 = r1;
+  }
+  if(tref > pref)
+    throw Roche_Error("Roche::face error: could not find a radius with a potential below the reference potential; probably bad inputs.");
+
+  // OK now refine with a binary chop. Crude but robust.
+  const int MAXCHOP = 1000;
+  int nchop = 0;
+  while(r2-r1 > acc && nchop < MAXCHOP){
+    r = (r1+r2)/2.;
+    pvec = cofm + r*dirn;
+    if(rpot(q, pvec) < pref){
+      r1 = r;
+    }else{
+      r2 = r;
+    }
+    nchop++;
+  }
+  if(nchop == MAXCHOP)
+    throw Roche_Error("Roche::face error: reached maximum number of binary chops = " + Subs::str(MAXCHOP) );
+
+  r     = (r1+r2)/2.;
+  pvec  = cofm + r*dirn;
+  dvec  = drpot(q, pvec);
+  g     = dvec.length();
+  dvec /= g;
+}
+
+
+
+
