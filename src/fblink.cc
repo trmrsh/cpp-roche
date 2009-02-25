@@ -42,7 +42,7 @@ bool Roche::fblink(double q, double iangle, double phi, const Subs::Vec3& p, STA
     if(!sphere_eclipse(iangle, p, cofm, rref, phi, lam1, lam2)) return false;
 
     // Create function objects for 1D minimisation in lambda direction
-    Rlpot   func(q, iangle, p, phi);
+    Rlpot func(q, iangle, p, phi);
 
     // Now try to bracket a minimum. We just crudely compute function at regularly spaced intervals filling in the
     // gaps until the step size between the points drops below the threshold. Take every opportunity to jump out early
