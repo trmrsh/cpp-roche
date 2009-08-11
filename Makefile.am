@@ -1,13 +1,15 @@
 ## Process this file with automake to generate Makefile.in
 
+ACLOCAL_AMFLAGS = -I m4
+
 SUBDIRS = src doc include
 
-EXTRA_DIST = pgplot_libs
-
 export: dist
-	scp $(PACKAGE)-$(VERSION).tar.gz $(WEB_SERVE):/$(WEB_PATH)/software/.
+	scp $(PACKAGE)-$(VERSION).tar.gz $(WEB_SERVE):$(WEB_PATH)/software/.
 	ssh $(WEB_SERVE) "cd $(WEB_PATH)/software ; \rm -f $(PACKAGE).tar.gz ; ln -s $(PACKAGE)-$(VERSION).tar.gz $(PACKAGE).tar.gz; \rm -fr $(PACKAGE); mkdir $(PACKAGE)"
 	scp -r doc/html $(WEB_SERVE):$(WEB_PATH)/software/$(PACKAGE)/.
+	ssh $(WEB_SERVE) "cd $(WEB_PATH)/software; sed -e 's%<\!-- roche version --><td>.*</td>%<\!-- roche version --><td>$(VERSION)</td>%' index.html > junk.html; mv junk.html index.html"
+	ssh $(WEB_SERVE) "cd $(WEB_PATH)/software; sed -e 's%<\!-- roche date --><td>.*</td>%<\!-- roche date --><td>$(DATE)</td>%' index.html > junk.html; mv junk.html index.html"
 
 ALIASES = Roche
 
