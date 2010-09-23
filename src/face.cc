@@ -51,7 +51,7 @@ void Roche::face(double q, const Subs::Vec3& dirn, double rref, double pref, dou
     throw Roche_Error("Roche::face error: could not find a radius with a potential below the reference potential; probably bad inputs.");
 
   // OK now refine with a binary chop. Crude but robust.
-  const int MAXCHOP = 1000;
+  const int MAXCHOP = 100;
   int nchop = 0;
   while(r2-r1 > acc && nchop < MAXCHOP){
     r = (r1+r2)/2.;
