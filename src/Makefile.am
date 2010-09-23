@@ -6,7 +6,7 @@
 
 progdir = @bindir@/@PACKAGE@
 
-prog_PROGRAMS    = algol impact lagrange pdwd cphase pstream pcont pphi equalrv vspace pshade
+prog_PROGRAMS    = algol impact lagrange pdwd cphase pstream pcont pphi equalrv vspace pshade speed_test
 
 algol_SOURCES    = algol.cc 
 cphase_SOURCES   = cphase.cc
@@ -19,6 +19,7 @@ pphi_SOURCES     = pphi.cc
 pshade_SOURCES   = pshade.cc
 pstream_SOURCES  = pstream.cc
 vspace_SOURCES   = vspace.cc
+speed_test_SOURCES = speed_test.cc
 
 INCLUDES = -I../include
 
@@ -36,7 +37,8 @@ lib_LTLIBRARIES = libroche.la
 libroche_la_SOURCES = blink.cc hits.cc rpot.cc gsint.cc rdot.cc strinit.cc rlobe_eggleton.cc irrad.cc rocacc.cc \
 xl1.cc xl2.cc xl3.cc lobe1.cc lobe2.cc flobe1.cc streamr.cc stradv.cc strmnx.cc drpot.cc vtrans.cc vlobe1.cc vlobe2.cc \
 zeta_rlobe_eggleton.cc contact.cc vstream.cc sphere_eclipse.cc ref_sphere.cc pot_min.cc rpot_val.cc rpot_grad.cc \
-rpot_val_grad.cc fblink.cc ingress_egress.cc face.cc set_earth.cc roche_shadow.cc disc_eclipse.cc stream.cc vstrreg.cc
+rpot_val_grad.cc fblink.cc ingress_egress.cc face.cc set_earth.cc roche_shadow.cc disc_eclipse.cc stream.cc vstrreg.cc \
+jacobi.cc
 
 
 
