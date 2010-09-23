@@ -25,9 +25,9 @@
 
 void Roche::stradv(double q, Subs::Vec3 &r, Subs::Vec3 &v, double rad, double acc, double smax){
 
-    const double EPS    = 1.e-8;
-    const double TMAX   = 10.;
-    static double tnext = 1.e-2;
+    const  double EPS    = 1.e-8;
+    const  double TMAX   = 10.;
+    static double tnext  = 1.e-2;
     double rnow, ttry, tdid, time, lo, hi, rlo, rhi, rinit;
     Subs::Vec3 ro, vo;
 
