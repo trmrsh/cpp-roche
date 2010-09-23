@@ -69,8 +69,7 @@ void Roche::vstrreg(double q, double step, float vx[], float vy[], int n, int ty
     while(np < n){
 
 	/* Advance one step */
-
-	stradv(q, r, v, rnext, RLOC, 1.e-2);
+	stradv(q, r, v, rnext, RLOC, 1.e-3);
 	vtrans(q, type, r.x(), r.y(), v.x(), v.y(), tvx, tvy);
 	vx[np] = tvx;
 	vy[np] = tvy;
@@ -78,16 +77,14 @@ void Roche::vstrreg(double q, double step, float vx[], float vy[], int n, int ty
 	rnext = decr ? rnext - rl1*step : rnext + rl1*step;
 
 	/* Locate and store next turning point */
-
 	rm = r;
 	vm = v;
 	strmnx(q, rm, vm, TLOC);
 	rend = rm.length();
 
 	/* Loop over all radii wanted before next turning point */
-
 	while(np < n && ((decr && rnext > rend) || (!decr && rnext < rend))){
-	    stradv(q, r, v, rnext, RLOC, 1.e-2);
+	    stradv(q, r, v, rnext, RLOC, 1.e-3);
 	    vtrans(q, type, r.x(), r.y(), v.x(), v.y(), tvx, tvy);
 	    vx[np] = tvx;
 	    vy[np] = tvy;
@@ -95,9 +92,7 @@ void Roche::vstrreg(double q, double step, float vx[], float vy[], int n, int ty
 	    rnext = decr ? rnext - rl1*step : rnext + rl1*step;
 	}
 
-	/* Change direction of search, and move it to start at
-	   turning point */
-
+	/* Change direction of search, and move it to start at turning point */
 	rnext = decr ? rnext + rl1*step : rnext - rl1*step;
 	r  = rm;
 	v  = vm;
