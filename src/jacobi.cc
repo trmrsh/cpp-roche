@@ -37,13 +37,14 @@ double Roche::jacobi(double q, coord r, coord v)
 #include "trm_roche.h"
 #include "trm_subs.h"
 
-double Roche::jacobi(double q, coord r, coord v){
-  double f1, f2, yzsq;
-  
-  f1 = 1.0/(1.0+q);
-  f2 = f1*q;
-
-  yzsq = dsqr(r.y) + dsqr(r.z);
-  return (dsqr(v.x)+dsqr(v.y)+dsqr(v.z)-dsqr(r.y)-
-          dsqr(r.x-f2))/2.0-f1/sqrt(dsqr(r.x)+yzsq)-f2/sqrt(dsqr(r.x-1.0)+yzsq);
+double Roche::jacobi(double q, const Subs::Vec3& r, const Subs::Vec3& v){
+    double f1, f2, yzsq;
+    
+    f1 = 1.0/(1.0+q);
+    f2 = f1*q;
+    
+    yzsq = Subs::sqr(r.y()) + Subs::sqr(r.z());
+    double jac = (Subs::sqr(v.x())+Subs::sqr(v.y())+Subs::sqr(v.z())-Subs::sqr(r.y())-Subs::sqr(r.x()-f2))/2.0 - 
+	f1/sqrt(Subs::sqr(r.x())+yzsq) - f2/sqrt(Subs::sqr(r.x()-1.0)+yzsq);
+    return jac;
 }
