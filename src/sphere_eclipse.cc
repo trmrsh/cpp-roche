@@ -18,27 +18,20 @@
  * project backwards. If the point in inside the sphere, phi1 will be set = 0, phi2 = 1,
  * lam1 = 0, and lam2 = the largest value of the multiplier lambda
  *
- * \param iangle  the orbital inclination, degrees. 90 = edge on.
+ * \param cosi cosine of orbital inclination
+ * \param sini sine of orbital inclination
  * \param r       the position vector of the point in question (units of binary separation)
  * \param c       the centre of the sphere enclosing the star (units of binary separation)
  * \param rsphere the radius defining the sphere enclosing the star (units of binary separation)
  * \param phi1    if eclipse by the sphere, this is the start of the phase range (0 -1)
  * \param phi2    if eclipse by the sphere, this is the end of the phase range (least amount > phi1)
- * \param lam1    if eclipse by the sphere, this is the start of the multiplier range (>0)
+ * \param lam1    if eclipse by the sphere, this is the start of the multiplier range (>=0)
  * \param lam2    if eclipse by the sphere, this is the end of the multiplier range (>lam1)
  * \return false = not eclipsed; true = eclipsed.
  */
 
-bool Roche::sphere_eclipse(double iangle, const Subs::Vec3& r, const Subs::Vec3& c, double rsphere, 
+bool Roche::sphere_eclipse(double cosi, double sini, const Subs::Vec3& r, const Subs::Vec3& c, double rsphere, 
 			   double& phi1, double& phi2, double& lam1, double& lam2){
-
-    // Compute and store cosine and sine of inclination if need be.
-    static double iangle_old = -1.e30, sini, cosi;
-    if(iangle != iangle_old){
-	iangle_old = iangle;
-	sini = sin(Constants::PI/180.*iangle);
-	cosi = cos(Constants::PI/180.*iangle);
-    }
 
     // Compute vector from centre of sphere to point
     const Subs::Vec3 d = r - c;
@@ -89,24 +82,19 @@ bool Roche::sphere_eclipse(double iangle, const Subs::Vec3& r, const Subs::Vec3&
  * starting point for later computation. Points inside the sphere are regarded as being
  * eclipsed with the lower mulitplier set = 0
  *
- * \param iangle  the orbital inclination, degrees. 90 = edge on.
+ * \param earth   vector towards Earth
  * \param r       the position vector of the point in question (units of binary separation)
  * \param c       the centre of the sphere (units of binary separation)
  * \param rsphere the radius defining the sphere enclosing the star (units of binary separation)
- * \param phase   phase in question
  * \param lam1    if eclipse by the sphere, this is the start of the multiplier range
  * \param lam2    if eclipse by the sphere, this is the end of the multiplier range
  * \return false = not eclipsed; true = eclipsed.
  */
 
-bool Roche::sphere_eclipse(double iangle, const Subs::Vec3& r, const Subs::Vec3& c, double rsphere, double phase, double& lam1, double& lam2){
+bool Roche::sphere_eclipse(const Subs::Vec3& earth, const Subs::Vec3& r, const Subs::Vec3& c, double rsphere, double& lam1, double& lam2){
 
     // Compute vector from centre of sphere to point
     const Subs::Vec3 d = r - c;
-
-    // Set earth vector
-    Subs::Vec3 earth;
-    set_earth(iangle, phase, earth);
 
     // Work out whether the line of sight cuts sphere
     const double BQUAD = Subs::dot(earth, d);

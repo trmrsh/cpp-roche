@@ -33,7 +33,7 @@ void Roche::roche_shadow(double q, double iangle, double phi, double dist, doubl
 
     // Compute L1 point and critical potential there.
     double rl1     = xl1(q);
-
+    Subs::Vec3 earth = set_earth(iangle, phi);
     Subs::Vec3 cofm(1.,0.,0.), p, dirn, p1, p2;
     p.y()   = p.z() = 0.;
     p.x()   = rl1;
@@ -74,18 +74,18 @@ void Roche::roche_shadow(double q, double iangle, double phi, double dist, doubl
 	p1 = cofm + r1*dirn;
 	p2 = cofm + r2*dirn;
 
-	if(!fblink(q, iangle, phi, p1, SECONDARY, 1., acc)){
+	if(!fblink(q, earth, p1, SECONDARY, 1., acc)){
 	    x[i]     = p1.x();
 	    y[i]     = p1.y();
 	    shade[i] = false;
-	}else if(fblink(q, iangle, phi, p2, SECONDARY, 1., acc)){
+	}else if(fblink(q, earth, p2, SECONDARY, 1., acc)){
 	    x[i]     = p2.x();
 	    y[i]     = p2.y();
 	    shade[i] = true;
 	}else{
 	    while(r2-r1 > acc){
 		p = (p1+p2)/2;
-		if(fblink(q, iangle, phi, p, SECONDARY, 1., acc)){
+		if(fblink(q, earth, p, SECONDARY, 1., acc)){
 		    p1 = p;
 		    r1 = (r1+r2)/2;
 		}else{

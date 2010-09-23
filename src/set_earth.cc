@@ -6,31 +6,44 @@
 #include "trm_roche.h"
 
 /** 
- * set_earth sets the earth vector given an inclination and orbital phase. For speed
- * it stores the cosine and sine of the various angles and checks on next entry whether
- * they need changing. 
+ * set_earth computes the earth vector given an inclination and orbital phase. 
+ *
  * \param  iangle orbital inclination
  * \param  phase  orbital phase (1 = one orbit)
- * \param  earth  the earth vector
+ *
+ * \return a Subs::Vec3 as the earth vector (unit vector)
  */
 
-void Roche::set_earth(const double iangle, const double phase, Subs::Vec3& earth){
+Subs::Vec3 Roche::set_earth(double iangle, double phase){
 
-  static double iangle_old = -1.e30, sini, cosi;
-  if(iangle != iangle_old){
-    iangle_old = iangle;
-    cosi       = cos(Constants::TWOPI*iangle/360.);
-    sini       = sin(Constants::TWOPI*iangle/360.);
-  }
+    double cosi, sini, ri = Subs::deg2rad(iangle);
+    cosi      = cos(ri);
+    sini      = sin(ri);
+    
+    double sinp, cosp, rp = Constants::TWOPI*phase;
+    cosp      = cos(rp);
+    sinp      = sin(rp);
+    
+    return Subs::Vec3(sini*cosp, -sini*sinp, cosi);
+}
 
-  static double phase_old = -1.e30, sinp, cosp;
-  if(phase != phase_old){
-    phase_old = phase;
-    cosp      = cos(Constants::TWOPI*phase);
-    sinp      = sin(Constants::TWOPI*phase);
-  }
+/** 
+ * set_earth computes the earth vector given an inclination and orbital phase. 
+ *
+ * \param  cosi cosine of orbital inclination
+ * \param  sini sine of orbital inclination
+ * \param  phase  orbital phase (1 = one orbit)
+ *
+ * \return a Subs::Vec3 as the earth vector (unit vector)
+ */
 
-  earth.set(sini*cosp, -sini*sinp, cosi);
+Subs::Vec3 Roche::set_earth(double cosi, double sini, double phase){
+
+    double sinp, cosp, rp = Constants::TWOPI*phase;
+    cosp      = cos(rp);
+    sinp      = sin(rp);
+    
+    return Subs::Vec3(sini*cosp, -sini*sinp, cosi);
 }
 
 

@@ -11,6 +11,8 @@
  * phi refers to the orbital phase, lambda to a multiplier that specified the position
  * of a point from an origin plus the multiplier time lambda.
  * \param q mass ratio  = M2/M1
+ * \param cosi cosine of orbital inclination
+ * \param sini sine of orbital inclination
  * \param iangle  the orbital inclination, degrees. 90 = edge on.
  * \param p position of origin (units of separation)
  * \param phi phase
@@ -19,37 +21,19 @@
  * \param dlam first derivative of Roche potential wrt lamda
  */
 
-void Roche::rpot_grad(double q, double iangle, const Subs::Vec3& p, double phi, double lam, double& dphi, double& dlam){
+void Roche::rpot_grad(double q, const Subs::Vec3& earth, const Subs::Vec3& p, double lam, double& dphi, double& dlam){
 
   if(q <= 0.) 
-    throw Roche_Error("Roche::rpot_grad(double, double, const Subs::Vec3&, double, double, double& double&, double&): q = " + Subs::str(q) + " <= 0.");
+    throw Roche_Error("Roche::rpot_grad(double, const Subs::Vec3&, const Subs::Vec3&, double, double& double&, double&): q = " + Subs::str(q) + " <= 0.");
 
-  // Compute cosine and sine of inclination if need be:
-  static double iangle_old = -100., sini, cosi;
-  if(iangle != iangle_old){
-    iangle_old = iangle;
-    sini = sin(Constants::PI*iangle/180.);
-    cosi = cos(Constants::PI*iangle/180.);
-  }
-
-
-  static double phi_old = -1.e30, sphi, cphi;
-  if(phi != phi_old){
-    phi_old = phi;
-    sphi = sin(Constants::TWOPI*phi);
-    cphi = cos(Constants::TWOPI*phi);
-  }
-
-  Subs::Vec3 e(  sini*cphi, -sini*sphi, cosi);
-  Subs::Vec3 ed(-sini*sphi, -sini*cphi, 0.);
-
-  Subs::Vec3 r = p + lam*e;
+  Subs::Vec3 r = p + lam*earth;
   Subs::Vec3 d = Roche::drpot(q, r);
 
   // derivative wrt phi
+  Subs::Vec3 ed(earth.y(), -earth.x(), 0.);
   dphi  = Constants::TWOPI*lam*Subs::dot(d, ed);
 
   // derivative wrt lambda
-  dlam  = Subs::dot(d, e);
+  dlam  = Subs::dot(d, earth);
 
 }

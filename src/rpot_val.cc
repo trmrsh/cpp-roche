@@ -11,22 +11,17 @@
  * phi refers to the orbital phase, lambda to a multiplier that specified the position
  * of a point from an origin plus the multiplier time lambda.
  * \param q mass ratio  = M2/M1
- * \param iangle  the orbital inclination, degrees. 90 = edge on.
+ * \param earth earth vector
  * \param p position of origin (units of separation)
- * \param phi phase
  * \param lam multiplier
  * \return Roche potential at point.
  */
 
-double Roche::rpot_val(double q, double iangle, const Subs::Vec3& p, double phi, double lam){
+double Roche::rpot_val(double q, const Subs::Vec3& earth, const Subs::Vec3& p, double lam){
 
     if(q <= 0.) 
-	throw Roche_Error("Roche::rpot_val(double, double, const Subs::Vec3&, double, double): q = " + Subs::str(q) + " <= 0.");
+	throw Roche_Error("Roche::rpot_val(double, const Subs::Vec3&, const Subs::Vec3&, double): q = " + Subs::str(q) + " <= 0.");
     
-    Subs::Vec3 earth;
-    set_earth(iangle, phi, earth); 
-    
-    Subs::Vec3 r = p + lam*earth;
-    
+    Subs::Vec3 r = p + lam*earth;    
     return rpot(q, r);
 }

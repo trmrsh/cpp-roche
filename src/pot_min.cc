@@ -17,7 +17,8 @@
  * calculates them for a sphere.
  *
  * \param q      mass ratio = M2/M1
- * \param iangle orbital inclination
+ * \param cosi   cosine orbital inclination
+ * \param sini   sine orbital inclination
  * \param p      point of origin 
  * \param phi1   minimum phase within which eclipse may occur (0 - 1)
  * \param phi2   maximum phase within which an eclipse may occur (> phi1)
@@ -32,7 +33,7 @@
  * \return true if minimum potential is below the reference
  */
 
-bool Roche::pot_min(double q, double iangle, const Subs::Vec3& p, double phi1, double phi2, double lam1, double lam2, 
+bool Roche::pot_min(double q, double cosi, double sini, const Subs::Vec3& p, double phi1, double phi2, double lam1, double lam2, 
 		    double rref, double pref, double acc, double& phi, double& lam){
 
     if(q <= 0.) throw Roche_Error("q = " + Subs::str(q) + "(<= 0.) in pot_min");
@@ -43,8 +44,11 @@ bool Roche::pot_min(double q, double iangle, const Subs::Vec3& p, double phi1, d
     phi = (phi1+phi2)/2.;
     lam = (lam1+lam2)/2.;
 
+    double rp = Constants::TWOPI*phi;
+    double cosp = cos(rp), sinp = sin(rp);
+    Subs::Vec3 earth(sini*cosp, -sini*sinp, cosi);
     double pot;
-    rpot_val_grad(q, iangle, p, phi, lam, pot, dphi, dlam);
+    rpot_val_grad(q, earth, p, lam, pot, dphi, dlam);
     if(pot <= pref) return true;
 
     gdphi = -dphi;
@@ -60,14 +64,18 @@ bool Roche::pot_min(double q, double iangle, const Subs::Vec3& p, double phi1, d
     bool jammed;
     for(int its=0; its<ITMAX; its++){
     
-	linmin(q, iangle, p, phi, lam, dphi, dlam, phi1, phi2, lam1, lam2, pref, acc, pmin, jammed);
+	linmin(q, cosi, sini, p, phi, lam, dphi, dlam, phi1, phi2, lam1, lam2, pref, acc, pmin, jammed);
 
 	// Various reasons for stopping
 	if(pmin <= pref) return true;
 	if(jammed || fabs(pmin-pot) < DELPHI) return false;
 
-	pot = pmin;
-	rpot_grad(q, iangle, p, phi, lam, dphi, dlam);
+	pot  = pmin;
+	rp   = Constants::TWOPI*phi;
+	cosp = cos(rp);
+	sinp = sin(rp);
+	earth.set(sini*cosp, -sini*sinp, cosi);
+	rpot_grad(q, earth, p, lam, dphi, dlam);
 
 	gg  = gdphi*gdphi + gdlam*gdlam;
 	if(gg == 0.) return false;
@@ -91,7 +99,8 @@ bool Roche::pot_min(double q, double iangle, const Subs::Vec3& p, double phi1, d
  * as the potential drops below a reference value. It is assumed that the potential is dropping
  * with x at the starting point.
  * \param q      mass ratio = M2/M1
- * \param iangle orbital inclination
+ * \param cosi   cosine of orbital inclination (both passed to speed computations)
+ * \param sini   sine of orbital inclination
  * \param p      point of origin 
  * \param phi    value of phase at start (0 - 1) and at end (returned)
  * \param lam    value of lambda at start and at end (returned)
@@ -107,12 +116,12 @@ bool Roche::pot_min(double q, double iangle, const Subs::Vec3& p, double phi1, d
  * \param jammed true if minimum is on a boundary
  */
 
-void Roche::linmin(double q, double iangle, const Subs::Vec3& p, double& phi, double& lam, double dphi, double dlam, 
+void Roche::linmin(double q, double cosi, double sini, const Subs::Vec3& p, double& phi, double& lam, double dphi, double dlam, 
 		   double phi1, double phi2, double lam1, double lam2, double pref, double acc, double& pmin, bool& jammed){
 
     // Create functions for 1D minimisation.
-    Rpot   func(q, iangle, p, phi, dphi, lam, dlam);
-    Drpot dfunc(q, iangle, p, phi, dphi, lam, dlam);
+    Rpot   func(q, cosi, sini, p, phi, dphi, lam, dlam);
+    Drpot dfunc(q, cosi, sini, p, phi, dphi, lam, dlam);
 
     // Current point equivalent to x=0. Compute maximum before hitting a boundary, and the boundary in question.
     double xmax = 1.e30;
@@ -131,6 +140,7 @@ void Roche::linmin(double q, double iangle, const Subs::Vec3& p, double& phi, do
 	    xmax   = xend;
 	}
     }
+
     if(dlam != 0.){
 	xend = (lam1-lam)/dlam;
 	if(xend > 0.&& xend < xmax){
@@ -232,7 +242,7 @@ void Roche::linmin(double q, double iangle, const Subs::Vec3& p, double& phi, do
 		}else{
 		    std::cerr << "Diagnostics" << std::endl;
 		    std::cerr << "xb,xc,db,dc= " << xb << "," << xc << "," << db << "," << dc << std::endl;
-		    std::cerr << "q,i,p = " << q << ", " << iangle << ", " << p << std::endl; 
+		    std::cerr << "q,ci,si,p = " << q << ", " << cosi << ", " << sini << ", " << p << std::endl; 
 		    std::cerr << "phi, lam, dphi, dlam = " << phi << ", " << lam << ", " << dphi << ", " << dlam << std::endl;
 		    std::cerr << "phi1,phi2,lam1,lam2 = " << phi1 << ", " << phi2 << ", " << lam1 << ", " << lam2 << std::endl;
 		    std::cerr << "pref, acc = " << pref << ", " << acc << std::endl;
@@ -247,7 +257,7 @@ void Roche::linmin(double q, double iangle, const Subs::Vec3& p, double& phi, do
 
 		std::cerr << "Temporary diagnostics" << std::endl;
 		std::cerr << "xb,xc,db,dc= " << xb << "," << xc << "," << db << "," << dc << std::endl;
-		std::cerr << "q,i,p = " << q << ", " << iangle << ", " << p << std::endl; 
+		std::cerr << "q,ci,si,p = " << q << ", " << cosi << ", " << sini << ", " << p << std::endl; 
 		std::cerr << "phi, lam, dphi, dlam = " << phi << ", " << lam << ", " << dphi << ", " << dlam << std::endl;
 		std::cerr << "phi1,phi2,lam1,lam2 = " << phi1 << ", " << phi2 << ", " << lam1 << ", " << lam2 << std::endl;
 		std::cerr << "pref, acc = " << pref << ", " << acc << std::endl;
@@ -265,7 +275,7 @@ void Roche::linmin(double q, double iangle, const Subs::Vec3& p, double& phi, do
 	    phi  += dphi*xmax;
 	    lam  += dlam*xmax;
 	    xmax = 1.;
-	    rpot_grad(q, iangle, p, phi, lam, dphi, dlam);
+	    rpot_grad(q, set_earth(cosi, sini, phi), p, lam, dphi, dlam);
 	    switch(nbound){
 		case 1:
 		    phi  = phi1;
@@ -303,8 +313,8 @@ void Roche::linmin(double q, double iangle, const Subs::Vec3& p, double& phi, do
 			dphi = phi2 - phi;
 		    }
 	    }
-	    func.reset(q, iangle, p,  phi, dphi, lam, dlam);
-	    dfunc.reset(q, iangle, p, phi, dphi, lam, dlam);
+	    func.reset(q, cosi, sini, p,  phi, dphi, lam, dlam);
+	    dfunc.reset(q, cosi, sini, p, phi, dphi, lam, dlam);
 
 	    // Again try to bracket minimum
 	    nten = 0;

@@ -11,38 +11,35 @@
  * of sight to the point to see if the Roche potential ever drops below the value at the stellar surface.
  *
  * \param q      mass ratio = M2/M1
- * \param iangle orbital inclination
- * \param phi    orbital phase (0 - 1)
+ * \param earth  vector pointing towards earth
  * \param p      point of interest
  * \param star   which star is doing the eclipsing, primary or secondary
  * \param ffac   the filling factor of the star
- * \param acc    accuracy of location of minimum potential, units of separation 
+ * \param acc    accuracy of location of minimum potential, units of separation. The accuracy in height relative to the
+ * Roche potential is acc*acc/(2*R) where R is the radius of curvature of the Roche potential surface, so don't be too
+ * picky. 1.e-4 would be more than good enough in most cases.
  * \return true if minimum potential is below the potential at stellar surface
  */
 
-bool Roche::fblink(double q, double iangle, double phi, const Subs::Vec3& p, STAR star, double ffac, double acc){
+bool Roche::fblink(double q, const Subs::Vec3& earth, const Subs::Vec3& p, STAR star, double ffac, double acc){
 
     // Compute radius of reference sphere and corresponding Roche potential.
-    static double q_old = -1., ffac_old = -1., rref, pref;
-    static Subs::Vec3 cofm;
-    static STAR star_old = PRIMARY;
-    if(q != q_old || ffac != ffac_old || star != star_old){
-	q_old    = q;
-	ffac_old = ffac;
-	star_old = star;
-	ref_sphere(q, ffac, star, rref, pref);
-	if(star == PRIMARY)
-	    cofm.set(0.,0.,0.);
-	else
-	    cofm.set(1.,0.,0.);
-    }
+    double rref, pref;
+    ref_sphere(q, ffac, star, rref, pref);
+
+    Subs::Vec3 cofm;
+    if(star == PRIMARY)
+	cofm.set(0.,0.,0.);
+    else
+	cofm.set(1.,0.,0.);
 
     // First compute the multipliers cutting the reference sphere (if any)
     double lam1, lam2;
-    if(!sphere_eclipse(iangle, p, cofm, rref, phi, lam1, lam2)) return false;
+    if(!sphere_eclipse(earth, p, cofm, rref, lam1, lam2)) return false;
+    if(lam1 == 0.) return true;
 
     // Create function objects for 1D minimisation in lambda direction
-    Rlpot func(q, iangle, p, phi);
+    Rlpot func(q, earth, p);
 
     // Now try to bracket a minimum. We just crudely compute function at regularly spaced intervals filling in the
     // gaps until the step size between the points drops below the threshold. Take every opportunity to jump out early
@@ -77,7 +74,7 @@ bool Roche::fblink(double q, double iangle, double phi, const Subs::Vec3& p, STA
 	// OK, minimum bracketted, so finally pin it down accurately
 	// Possible that multiple minima could cause problems but I have
 	// never seen this in practice.
-	Dlrpot dfunc(q, iangle, p, phi);
+	Dlrpot dfunc(q, earth, p);
 	double xmin;
 	try {
 	    flam = dbrent(lam1, lam, lam2, func, dfunc, acc, true, pref, xmin);
@@ -85,7 +82,7 @@ bool Roche::fblink(double q, double iangle, double phi, const Subs::Vec3& p, STA
 	catch(const Subs::Subs_Error& err){
 	    std::cerr << "Line minimisation error inside fblink" << std::endl;
 	    std::cerr << err << std::endl;
-	    std::cerr << "q = " << q << ", i = " << iangle << ", phi = " << phi << ", point = " << p << ", star = " << int(star) 
+	    std::cerr << "q = " << q << ", earth = " << earth << ", point = " << p << ", star = " << int(star) 
 		      << ", ffac = " << ffac << ", acc = " << acc << std::endl;
 	    throw Subs::Subs_Error("fblink died");
 	}
