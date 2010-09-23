@@ -23,7 +23,7 @@ void Roche::vtrans(double q, int type, double x, double y, double vx, double vy,
 
 !!table
 !!arg{q}{ mass ratio = M2/M1}
-!!arg{type}{1 for rotating->inertial, 2 for position to disc}
+!!arg{type}{1 for rotating->inertial, 2 for position to disc, 3 for rotating.}
 !!arg{x}{x position (units of separation)}
 !!arg{y}{y position (units of separation)}
 !!arg{vx}{x velocity (omega*a = 1 units)}
@@ -46,26 +46,29 @@ mu = q/(1+q) to tvy before using it.
 #include <iostream>
 #include "trm_roche.h"
 
-void Roche::vtrans(double q, int type, double x, double y, double vx, double vy,
-		   double &tvx, double &tvy){
+void Roche::vtrans(double q, int type, double x, double y, double vx, double vy, double &tvx, double &tvy){
 
-  double mu, rad, vkep;
-
-  mu = q/(1.0+q);
-  switch(type){
-  case 1:
-    tvx = vx - y;
-    tvy = vy + x - mu;
-    break;
-  case 2:
-    rad  = sqrt(x*x+y*y);
-    vkep = 1.0/sqrt((1.0+q)*rad);
-    tvx = -vkep*y/rad;
-    tvy =  vkep*x/rad-mu;
-    break;
-  default:
-    std::cerr << "Case %d not recognised in vtrans.\n";
-    throw std::string("Failure in vtrans\n");
-  }
-  return;
+    double mu, rad, vkep;
+    
+    mu = q/(1.0+q);
+    switch(type){
+	case 1:
+	    tvx = vx - y;
+	    tvy = vy + x - mu;
+	    break;
+	case 2:
+	    rad  = sqrt(x*x+y*y);
+	    vkep = 1.0/sqrt((1.0+q)*rad);
+	    tvx = -vkep*y/rad;
+	    tvy =  vkep*x/rad-mu;
+	    break;
+	case 3:
+	    tvx = vx;
+	    tvy = vy;
+	    break;
+	default:
+	    throw Roche_Error("Error in vtrans: did not recognize type = " + Subs::str(type) + 
+			      ". Only 1 or 2 supported.");
+    }
+    return;
 }
