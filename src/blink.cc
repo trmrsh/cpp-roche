@@ -126,7 +126,8 @@ bool Roche::blink(double q, const Subs::Vec3& r, const Subs::Vec3& e, double acc
 
   // Deeper in well than inner Lagrangian, therefore eclipsed.
 
-  if((c  = c1/r1 + c2/r2 + (xc = x1 - xcm)*xc + yy) > crit) return true;
+  xc = x1 - xcm;
+  if((c  = c1/r1 + c2/r2 + xc*xc + yy) > crit) return true;
 
   // Now we need to step. Determine step direction by 
   // evaluating the first derivative
