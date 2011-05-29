@@ -34,7 +34,7 @@ int main(){
     std::cout << "Enter q, i and filling factor: ";
     std::cin >> q >> iangle >> ffac;
     double rsphere, pref, phase;
-    Roche::ref_sphere(q, ffac, Roche::SECONDARY, rsphere, pref);
+    Roche::ref_sphere(q, Roche::SECONDARY, 1., ffac, rsphere, pref);
     const Subs::Vec3 cofm2(1.,0.,0.);
     double ri = Subs::deg2rad(iangle);
     

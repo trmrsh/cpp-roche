@@ -13,21 +13,22 @@
  * phase should be set to be below the expected uncertainties of the phases of your data.
  *
  * \param q       the mass ratio = M2/M1.
+ * \param star    which star, primary or secondary, is doing the eclipsing
+ * \param spin    ratio of spin to orbit of eclipsing star
  * \param ffac    linear filling factor
  * \param iangle  inclination angle
+ * \param delta   the accuracy in phase wanted.
  * \param r       position vector of point of interest.
  * \param ingress ingress phase (if eclipsed)
  * \param egress  egress phase 
- * \param delta   the accuracy in phase wanted.
- * \param star    which star, primary or secondary, is doing the eclipsing
  * \return false = not eclipsed; true = eclipsed.
  */
 
-bool Roche::ingress_egress(double q, double ffac, double iangle, const Subs::Vec3& r, double& ingress, double& egress, double delta, STAR star){
+bool Roche::ingress_egress(double q, STAR star, double spin, double ffac, double iangle, double delta, const Subs::Vec3& r, double& ingress, double& egress){
 
     // Compute radius of reference sphere and corresponding Roche potential.
     double rref, pref;
-    ref_sphere(q, ffac, star, rref, pref);
+    ref_sphere(q, star, spin, ffac, rref, pref);
 
     double ri = Subs::deg2rad(iangle);
     double cosi = cos(ri), sini = sin(ri);
@@ -47,7 +48,7 @@ bool Roche::ingress_egress(double q, double ffac, double iangle, const Subs::Vec
 	const double ACC = 2.*sqrt(2.*Constants::TWOPI*(lam2-lam1)*delta);
 	
 	// Now using the limits from the reference sphere, check more carefully
-	if(pot_min(q, cosi, sini, r, phi1, phi2, lam1, lam2, rref, pref, ACC, phi, lam)){
+	if(pot_min(q, cosi, sini, star, spin, r, phi1, phi2, lam1, lam2, rref, pref, ACC, phi, lam)){
 	    
 	    // We now know that there is an eclipse, and one phase (=phi) when it occurs. 
 	    // Refine boundaries with binary chop
@@ -56,7 +57,7 @@ bool Roche::ingress_egress(double q, double ffac, double iangle, const Subs::Vec
 	    double pin = phi, pout = phi1, pmid;
 	    while(fabs(pin-pout) > delta){
 		pmid = (pin+pout)/2.;
-		if(fblink(q, set_earth(cosi, sini, pmid), r, star, ffac, ACC)){
+		if(fblink(q, star, spin, ffac, ACC, set_earth(cosi, sini, pmid), r)){
 		    pin  = pmid;
 		}else{
 		    pout = pmid;
@@ -70,7 +71,7 @@ bool Roche::ingress_egress(double q, double ffac, double iangle, const Subs::Vec
 	    pout = phi2;
 	    while(fabs(pin-pout) > delta){
 		pmid = (pin+pout)/2.;
-		if(fblink(q, set_earth(cosi, sini, pmid), r, star, ffac, ACC)){
+		if(fblink(q, star, spin, ffac, ACC, set_earth(cosi, sini, pmid), r)){
 		    pin  = pmid;
 		}else{
 		    pout = pmid;

@@ -11,21 +11,23 @@
  * of sight to the point to see if the Roche potential ever drops below the value at the stellar surface.
  *
  * \param q      mass ratio = M2/M1
- * \param earth  vector pointing towards earth
- * \param p      point of interest
+ * \param star   star concerned
+ * \param spin   ratio of spin to orbital frequency
  * \param star   which star is doing the eclipsing, primary or secondary
  * \param ffac   the filling factor of the star
  * \param acc    accuracy of location of minimum potential, units of separation. The accuracy in height relative to the
  * Roche potential is acc*acc/(2*R) where R is the radius of curvature of the Roche potential surface, so don't be too
  * picky. 1.e-4 would be more than good enough in most cases.
+ * \param earth  vector pointing towards earth
+ * \param p      point of interest
  * \return true if minimum potential is below the potential at stellar surface
  */
 
-bool Roche::fblink(double q, const Subs::Vec3& earth, const Subs::Vec3& p, STAR star, double ffac, double acc){
+bool Roche::fblink(double q, STAR star, double spin, double ffac, double acc, const Subs::Vec3& earth, const Subs::Vec3& p){
 
     // Compute radius of reference sphere and corresponding Roche potential.
     double rref, pref;
-    ref_sphere(q, ffac, star, rref, pref);
+    ref_sphere(q, star, spin, ffac, rref, pref);
 
     Subs::Vec3 cofm;
     if(star == PRIMARY)
@@ -39,7 +41,7 @@ bool Roche::fblink(double q, const Subs::Vec3& earth, const Subs::Vec3& p, STAR 
     if(lam1 == 0.) return true;
 
     // Create function objects for 1D minimisation in lambda direction
-    Rlpot func(q, earth, p);
+    Rlpot func(q, star, spin, earth, p);
 
     // Now try to bracket a minimum. We just crudely compute function at regularly spaced intervals filling in the
     // gaps until the step size between the points drops below the threshold. Take every opportunity to jump out early
@@ -74,7 +76,7 @@ bool Roche::fblink(double q, const Subs::Vec3& earth, const Subs::Vec3& p, STAR 
 	// OK, minimum bracketted, so finally pin it down accurately
 	// Possible that multiple minima could cause problems but I have
 	// never seen this in practice.
-	Dlrpot dfunc(q, earth, p);
+	Dlrpot dfunc(q, star, spin, earth, p);
 	double xmin;
 	try {
 	    flam = dbrent(lam1, lam, lam2, func, dfunc, acc, true, pref, xmin);

@@ -7,7 +7,7 @@
 
 /**
  * roche_shadow returns arrays x and y for plotting the shadow of
- * the secondary star's Roche lobe in the equatorial plane.
+ * a semi-detached star's Roche lobe in the equatorial plane.
  * \param q mass ratio = M2/M1
  * \param iangle inclination angle
  * \param phi orbital phase
@@ -74,18 +74,18 @@ void Roche::roche_shadow(double q, double iangle, double phi, double dist, doubl
 	p1 = cofm + r1*dirn;
 	p2 = cofm + r2*dirn;
 
-	if(!fblink(q, earth, p1, SECONDARY, 1., acc)){
+	if(!fblink(q, SECONDARY, 1., 1., acc, earth, p1)){
 	    x[i]     = p1.x();
 	    y[i]     = p1.y();
 	    shade[i] = false;
-	}else if(fblink(q, earth, p2, SECONDARY, 1., acc)){
+	}else if(fblink(q, SECONDARY, 1., 1., acc, earth, p2)){
 	    x[i]     = p2.x();
 	    y[i]     = p2.y();
 	    shade[i] = true;
 	}else{
 	    while(r2-r1 > acc){
 		p = (p1+p2)/2;
-		if(fblink(q, earth, p, SECONDARY, 1., acc)){
+		if(fblink(q, SECONDARY, 1., 1., acc, earth, p)){
 		    p1 = p;
 		    r1 = (r1+r2)/2;
 		}else{

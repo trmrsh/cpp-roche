@@ -19,6 +19,8 @@
  * \param q      mass ratio = M2/M1
  * \param cosi   cosine orbital inclination
  * \param sini   sine orbital inclination
+ * \param star   which star (needed for asynchronous case)
+ * \param spin   ratio of spin/orbital
  * \param p      point of origin 
  * \param phi1   minimum phase within which eclipse may occur (0 - 1)
  * \param phi2   maximum phase within which an eclipse may occur (> phi1)
@@ -33,8 +35,9 @@
  * \return true if minimum potential is below the reference
  */
 
-bool Roche::pot_min(double q, double cosi, double sini, const Subs::Vec3& p, double phi1, double phi2, double lam1, double lam2, 
-		    double rref, double pref, double acc, double& phi, double& lam){
+bool Roche::pot_min(double q, double cosi, double sini, STAR star, double spin, const Subs::Vec3& p, 
+		    double phi1, double phi2, double lam1, double lam2, double rref, double pref, 
+		    double acc, double& phi, double& lam){
 
     if(q <= 0.) throw Roche_Error("q = " + Subs::str(q) + "(<= 0.) in pot_min");
 
@@ -48,7 +51,7 @@ bool Roche::pot_min(double q, double cosi, double sini, const Subs::Vec3& p, dou
     double cosp = cos(rp), sinp = sin(rp);
     Subs::Vec3 earth(sini*cosp, -sini*sinp, cosi);
     double pot;
-    rpot_val_grad(q, earth, p, lam, pot, dphi, dlam);
+    rpot_val_grad(q, star, spin, earth, p, lam, pot, dphi, dlam);
     if(pot <= pref) return true;
 
     gdphi = -dphi;
@@ -64,7 +67,7 @@ bool Roche::pot_min(double q, double cosi, double sini, const Subs::Vec3& p, dou
     bool jammed;
     for(int its=0; its<ITMAX; its++){
     
-	linmin(q, cosi, sini, p, phi, lam, dphi, dlam, phi1, phi2, lam1, lam2, pref, acc, pmin, jammed);
+	linmin(q, star, spin, cosi, sini, p, phi, lam, dphi, dlam, phi1, phi2, lam1, lam2, pref, acc, pmin, jammed);
 
 	// Various reasons for stopping
 	if(pmin <= pref) return true;
@@ -75,7 +78,7 @@ bool Roche::pot_min(double q, double cosi, double sini, const Subs::Vec3& p, dou
 	cosp = cos(rp);
 	sinp = sin(rp);
 	earth.set(sini*cosp, -sini*sinp, cosi);
-	rpot_grad(q, earth, p, lam, dphi, dlam);
+	rpot_grad(q, star, spin, earth, p, lam, dphi, dlam);
 
 	gg  = gdphi*gdphi + gdlam*gdlam;
 	if(gg == 0.) return false;
@@ -99,6 +102,8 @@ bool Roche::pot_min(double q, double cosi, double sini, const Subs::Vec3& p, dou
  * as the potential drops below a reference value. It is assumed that the potential is dropping
  * with x at the starting point.
  * \param q      mass ratio = M2/M1
+ * \param star   star in question
+ * \param spin   spin to orbital frequency ratio
  * \param cosi   cosine of orbital inclination (both passed to speed computations)
  * \param sini   sine of orbital inclination
  * \param p      point of origin 
@@ -116,12 +121,13 @@ bool Roche::pot_min(double q, double cosi, double sini, const Subs::Vec3& p, dou
  * \param jammed true if minimum is on a boundary
  */
 
-void Roche::linmin(double q, double cosi, double sini, const Subs::Vec3& p, double& phi, double& lam, double dphi, double dlam, 
-		   double phi1, double phi2, double lam1, double lam2, double pref, double acc, double& pmin, bool& jammed){
+void Roche::linmin(double q, STAR star, double spin, double cosi, double sini, const Subs::Vec3& p, double& phi, double& lam, 
+		   double dphi, double dlam, double phi1, double phi2, double lam1, double lam2, double pref, double acc, 
+		   double& pmin, bool& jammed){
 
     // Create functions for 1D minimisation.
-    Rpot   func(q, cosi, sini, p, phi, dphi, lam, dlam);
-    Drpot dfunc(q, cosi, sini, p, phi, dphi, lam, dlam);
+    Rpot   func(q, star, spin, cosi, sini, p, phi, dphi, lam, dlam);
+    Drpot dfunc(q, star, spin, cosi, sini, p, phi, dphi, lam, dlam);
 
     // Current point equivalent to x=0. Compute maximum before hitting a boundary, and the boundary in question.
     double xmax = 1.e30;
@@ -275,7 +281,7 @@ void Roche::linmin(double q, double cosi, double sini, const Subs::Vec3& p, doub
 	    phi  += dphi*xmax;
 	    lam  += dlam*xmax;
 	    xmax = 1.;
-	    rpot_grad(q, set_earth(cosi, sini, phi), p, lam, dphi, dlam);
+	    rpot_grad(q, star, spin, set_earth(cosi, sini, phi), p, lam, dphi, dlam);
 	    switch(nbound){
 		case 1:
 		    phi  = phi1;
@@ -313,8 +319,8 @@ void Roche::linmin(double q, double cosi, double sini, const Subs::Vec3& p, doub
 			dphi = phi2 - phi;
 		    }
 	    }
-	    func.reset(q, cosi, sini, p,  phi, dphi, lam, dlam);
-	    dfunc.reset(q, cosi, sini, p, phi, dphi, lam, dlam);
+	    func.reset(q, star, spin, cosi, sini, p,  phi, dphi, lam, dlam);
+	    dfunc.reset(q, star, spin, cosi, sini, p, phi, dphi, lam, dlam);
 
 	    // Again try to bracket minimum
 	    nten = 0;

@@ -36,7 +36,7 @@ int main(){
     std::cout << "Enter q, i and filling factor: ";
     std::cin >> q >> iangle >> ffac;
     double rref, pref;
-    Roche::ref_sphere(q, ffac, Roche::SECONDARY, rref, pref);
+    Roche::ref_sphere(q, Roche::SECONDARY, 1., ffac, rref, pref);
     const Subs::Vec3 cofm2(1.,0.,0.);
     double ri = Subs::deg2rad(iangle);
     double cosi = cos(ri), sini = sin(ri);
@@ -87,11 +87,11 @@ int main(){
 		cpgcont(arr, NX, NY, 1, NX, 1, NY, cont, 1,  tr);
 		
 		double phi, lam;
-		Roche::pot_min(q, cosi, sini, r, phi1, phi2, lam1, lam2, rref, pref, 1.e-3, phi, lam);
+		Roche::pot_min(q, cosi, sini, Roche::SECONDARY, 1., r, phi1, phi2, lam1, lam2, rref, pref, 1.e-3, phi, lam);
 		cpgpt1(phi, lam, 5);
 		
 		double ingress, egress;
-		if(Roche::ingress_egress(q, ffac, iangle, r, ingress, egress, 1.e-6, Roche::SECONDARY)){
+		if(Roche::ingress_egress(q, Roche::SECONDARY, 1., ffac, iangle, 1.e-6, r, ingress, egress)){
 		    std::cout << "point is eclipsed by star from " << ingress << " to " << egress << std::endl;
 		}else{
 		    std::cout << "point is not eclipsed by star" << std::endl;

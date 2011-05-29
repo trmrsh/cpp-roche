@@ -11,11 +11,12 @@
  * a direction, a reference radius and a potential. 
  *
  * \param q    the mass ratio = M2/M1.
+ * \param star specifies which star, primary or secondary is under consideration.
+ * \param spin ratio of star in questions spin to the orbital frequency
  * \param dirn the direction (unit) vector from the centre of mass of the secondary to the face in question.
  * \param rref reference radius. This is a radius large enough to guarantee crossing of the reference potential. See ref_sphere
  * \param pref reference potential
  * \param acc  location accuracy (units of separation)
- * \param star specifies which star, primary or secondary is under consideration.
  * \param pvec position vector of centre of face (position vector in standard binary coordinates), returned
  * \param dvec orientation vector perpendicular to face, returned
  * \param r    distance from centre of mass of star, returned
@@ -25,52 +26,57 @@
  * exception may be thrown if too many binary chops occur. The behaviour at the L1 point is undefined so do not try to call it there.
  */
 
-void Roche::face(double q, const Subs::Vec3& dirn, double rref, double pref, double acc, STAR star, Subs::Vec3& pvec, Subs::Vec3& dvec, double& r, double& g){
+void Roche::face(double q, STAR star, double spin, const Subs::Vec3& dirn, double rref, double pref, double acc,
+		 Subs::Vec3& pvec, Subs::Vec3& dvec, double& r, double& g){
 
-  // Only difference the star makes is the centre of mass
-  const Subs::Vec3 cofm = (star == PRIMARY) ? Subs::Vec3(0.,0.,0.) : Subs::Vec3(1.,0.,0.);
+    // centre of mass in question
+    const Subs::Vec3 cofm = (star == PRIMARY) ? Subs::Vec3(0.,0.,0.) : Subs::Vec3(1.,0.,0.);
+  
+    // Pointer to Roche potential and potential derivative functions
+    double (*rp)(double q, double spin, const Subs::Vec3& p) = (star == PRIMARY) ? &rpot1 : &rpot2;
+    Subs::Vec3 (*drp)(double q, double spin, const Subs::Vec3& p) = (star == PRIMARY) ? &drpot1 : &drpot2;
 
-  // A check on the reference radius & potential
-  double tref = rpot(q, cofm + rref*dirn);
-  if(tref < pref)
-    throw Roche_Error("Roche::face error: point at reference radius = " + Subs::str(rref) + 
-		      " appears to be at lower potential = " + Subs::str(tref) + " than the reference = " + Subs::str(pref));
+    // A check on the reference radius & potential
+    double tref = rp(q, spin, cofm + rref*dirn);
+    if(tref < pref)
+	throw Roche_Error("Roche::face error: point at reference radius = " + Subs::str(rref) + 
+			  " appears to be at lower potential = " + Subs::str(tref) + " than the reference = " + Subs::str(pref));
 
-  // Find r1 r2 such that r1 is below reference potential and r2 is above.
-  double r1 = rref/2, r2 = rref;
-  tref = pref + 1;
+    // Find r1 r2 such that r1 is below reference potential and r2 is above.
+    double r1 = rref/2, r2 = rref;
+    tref = pref + 1;
 
-  const int MAXSEARCH = 30;
-  for(int i=0; i<MAXSEARCH && tref > pref; i++){
-    r1   = r2/2;
-    tref = rpot(q, cofm + r1*dirn);
-    if(tref > pref)
-      r2 = r1;
-  }
-  if(tref > pref)
-    throw Roche_Error("Roche::face error: could not find a radius with a potential below the reference potential; probably bad inputs.");
-
-  // OK now refine with a binary chop. Crude but robust.
-  const int MAXCHOP = 100;
-  int nchop = 0;
-  while(r2-r1 > acc && nchop < MAXCHOP){
-    r = (r1+r2)/2.;
-    pvec = cofm + r*dirn;
-    if(rpot(q, pvec) < pref){
-      r1 = r;
-    }else{
-      r2 = r;
+    const int MAXSEARCH = 30;
+    for(int i=0; i<MAXSEARCH && tref > pref; i++){
+	r1   = r2/2;
+	tref = rp(q, spin, cofm + r1*dirn);
+	if(tref > pref)
+	    r2 = r1;
     }
-    nchop++;
-  }
-  if(nchop == MAXCHOP)
-    throw Roche_Error("Roche::face error: reached maximum number of binary chops = " + Subs::str(MAXCHOP) );
+    if(tref > pref)
+	throw Roche_Error("Roche::face error: could not find a radius with a potential below the reference potential; probably bad inputs.");
 
-  r     = (r1+r2)/2.;
-  pvec  = cofm + r*dirn;
-  dvec  = drpot(q, pvec);
-  g     = dvec.length();
-  dvec /= g;
+    // OK now refine with a binary chop. Crude but robust.
+    const int MAXCHOP = 100;
+    int nchop = 0;
+    while(r2-r1 > acc && nchop < MAXCHOP){
+	r = (r1+r2)/2.;
+	pvec = cofm + r*dirn;
+	if(rp(q, spin, pvec) < pref){
+	    r1 = r;
+	}else{
+	    r2 = r;
+	}
+	nchop++;
+    }
+    if(nchop == MAXCHOP)
+	throw Roche_Error("Roche::face error: reached maximum number of binary chops = " + Subs::str(MAXCHOP) );
+
+    r     = (r1+r2)/2.;
+    pvec  = cofm + r*dirn;
+    dvec  = drp(q, spin, pvec);
+    g     = dvec.length();
+    dvec /= g;
 }
 
 

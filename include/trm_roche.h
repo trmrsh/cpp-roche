@@ -54,9 +54,21 @@ namespace Roche {
   
     //! Computes Roche potential
     double rpot(double q, const Subs::Vec3& p);
+
+    //! Computes asynchronous Roche potential, star 1
+    double rpot1(double q, double spin, const Subs::Vec3& p);
+
+    //! Computes asynchronous Roche potential, star 2
+    double rpot2(double q, double spin, const Subs::Vec3& p);
   
     //! Computes derivative of Roche potential
     Subs::Vec3 drpot(double q, const Subs::Vec3& p);
+
+    //! Computes derivative of asynchronous Roche potential, star 1
+    Subs::Vec3 drpot1(double q, double spin, const Subs::Vec3& p);
+
+    //! Computes derivative of asynchronous Roche potential, star 2
+    Subs::Vec3 drpot2(double q, double spin, const Subs::Vec3& p);
   
     //! Calculates primary star's Roche lobe in orbital plane
     void lobe1(double q, float *x, float *y, int n);
@@ -161,49 +173,49 @@ namespace Roche {
     std::vector<std::pair<double,double> > disc_eclipse(double iangle, double rdisc1, double rdisc2, double beta, double height, const Subs::Vec3& r);
 
     //! Computes radius of reference sphere and Roche potential for Roche-distorted star
-    void ref_sphere(double q, double ffac, STAR star, double& rref, double& pref);
+    void ref_sphere(double q, STAR star, double spin, double ffac, double& rref, double& pref);
   
-    //! Computes potential, first and second derivatives wrt coordinates at a point
-    void rpot_derivs(double q, const Subs::Vec3& r, double& rpot, Subs::Vec3& fd, Subs::Vec3& sdx, Subs::Vec3& sdy, Subs::Vec3& sdz);
-
     //! Computes gradients of Roche potential wrt phi and lambda
-    void rpot_grad(double q, const Subs::Vec3& earth, const Subs::Vec3& p, double lam, double& dphi, double& dlam);
+    void rpot_grad(double q, STAR star, double spin, const Subs::Vec3& earth, const Subs::Vec3& p, double lam, double& dphi, double& dlam);
 
     //! Computes value and gradients of Roche potential wrt phi and lambda
-    void rpot_val_grad(double q, const Subs::Vec3& earth, const Subs::Vec3& p, double lam, double& rpot, double& dphi, double& dlam);
+    void rpot_val_grad(double q, STAR star, double spin, const Subs::Vec3& earth, const Subs::Vec3& p, double lam, double& rpot, double& dphi, double& dlam);
 
     //! Computes value of Roche potential as function of lambda
-    double rpot_val(double q, const Subs::Vec3& earth, const Subs::Vec3& p, double lam);
+    double rpot_val(double q, STAR star, double spin, const Subs::Vec3& earth, const Subs::Vec3& p, double lam);
 
     //! Computes shadows of Roche lobe in equatorial plane
     void roche_shadow(double q, double iangle, double phi, double dist, double acc, float x[], float y[], bool shade[], int n);
 
-    //! Minmisation of Roche potential
-    bool pot_min(double q, double cosi, double sini, const Subs::Vec3& p, double phi1, double phi2, double lam1, double lam2, 
-		 double rref, double pref, double ftol, double& phi, double& lam);
+    //! Minimisation of Roche potential
+    bool pot_min(double q, double cosi, double sini, STAR star, double spin, const Subs::Vec3& p, 
+		 double phi1, double phi2, double lam1, double lam2, double rref, double pref, double ftol, double& phi, double& lam);
 
     //! minimisation along a line accounting for boundaries.
-    void linmin(double q, double cosi, double sini, const Subs::Vec3& p, double& phi, double& lam, double dphi, double dlam, 
-		double phi1, double phi2, double lam1, double lam2, double pref, double acc, double& pmin, bool& jammed);
+    void linmin(double q, STAR star, double spin, double cosi, double sini, const Subs::Vec3& p, double& phi, double& lam, 
+		double dphi, double dlam, double phi1, double phi2, double lam1, double lam2, double pref, double acc, double& pmin, bool& jammed);
 
     //! Is a point in eclipse or not?
-    bool fblink(double q, const Subs::Vec3& earth, const Subs::Vec3& p, STAR star, double ffac, double acc);
+    bool fblink(double q, STAR star, double spin, double ffac, double acc, const Subs::Vec3& earth, const Subs::Vec3& p);
 
     //! Computes ingress & egress phases in Roche geometry
-    bool ingress_egress(double q, double ffac, double iangle, const Subs::Vec3& r, double& ingress, double& egress, double delta, STAR star);
+    bool ingress_egress(double q, STAR star, double spin, double ffac, double iangle, double delta, const Subs::Vec3& r, double& ingress, double& egress);
 
     //! Computes the position of a point on the Roche distorted surface
-    void face(double q, const Subs::Vec3& dirn, double rref, double pref, double acc, STAR star, Subs::Vec3& pvec, Subs::Vec3& dvec, double& r, double& g);
+    void face(double q, STAR star, double spin, const Subs::Vec3& dirn, double rref, double pref, double acc, Subs::Vec3& pvec, Subs::Vec3& dvec, double& r, double& g);
 
     //! Function object for carrying out line minimisation in phi lambda space
     class Rpot : public Subs::Sfunc {
     
     public:
-	Rpot(double q, double cosi, double sini, const Subs::Vec3& p, double phi, double dphi, double lam, double dlam) 
-	    : q_(q), cosi_(cosi), sini_(sini), p_(p), phi_(phi), dphi_(dphi), lam_(lam), dlam_(dlam) {}
+	Rpot(double q, STAR star, double spin, double cosi, double sini, const Subs::Vec3& p, double phi, double dphi, double lam, double dlam) 
+	    : q_(q), star_(star), spin_(spin), cosi_(cosi), sini_(sini), p_(p), phi_(phi), dphi_(dphi), lam_(lam), dlam_(dlam) {}
     
-	void reset(double q, double cosi, double sini, const Subs::Vec3& p, double phi, double dphi, double lam, double dlam) {
+	void reset(double q, STAR star, double spin, double cosi, double sini, const Subs::Vec3& p, double phi, double dphi, 
+		   double lam, double dlam) {
 	    q_      = q;
+	    star_   = star;
+	    spin_   = spin;
 	    cosi_   = cosi;
 	    sini_   = sini;
 	    p_      = p;
@@ -214,11 +226,13 @@ namespace Roche {
 	}
 
 	double operator()(double x) {
-	    return rpot_val(q_, set_earth(cosi_, sini_, phi_+dphi_*x), p_, lam_+dlam_*x);
+	    return rpot_val(q_, star_, spin_, set_earth(cosi_, sini_, phi_+dphi_*x), p_, lam_+dlam_*x);
 	}
     
     private:
-	double q_, cosi_, sini_;
+	double q_;
+	STAR star_;
+	double spin_, cosi_, sini_;
 	Subs::Vec3 p_;
 	double phi_, dphi_, lam_, dlam_;
     };
@@ -228,11 +242,14 @@ namespace Roche {
     
     public:
 
-	Drpot(double q, double cosi, double sini, const Subs::Vec3& p, double phi, double dphi, double lam, double dlam) 
-	    : q_(q), cosi_(cosi), sini_(sini), p_(p), phi_(phi), dphi_(dphi), lam_(lam), dlam_(dlam) {}
+	Drpot(double q, STAR star, double spin, double cosi, double sini, const Subs::Vec3& p, double phi, double dphi, 
+	      double lam, double dlam) 
+	    : q_(q), star_(star), spin_(spin), cosi_(cosi), sini_(sini), p_(p), phi_(phi), dphi_(dphi), lam_(lam), dlam_(dlam) {}
     
-	void reset(double q, double cosi, double sini, const Subs::Vec3& p, double phi, double dphi, double lam, double dlam) {
+	void reset(double q, STAR star, double spin, double cosi, double sini, const Subs::Vec3& p, double phi, double dphi, double lam, double dlam) {
 	    q_      = q;
+	    star_   = star;
+	    spin_   = spin;
 	    cosi_   = cosi;
 	    sini_   = sini;
 	    p_      = p;
@@ -244,12 +261,14 @@ namespace Roche {
 
 	double operator()(double x) {
 	    double dp, dl;
-	    rpot_grad(q_, set_earth(cosi_, sini_, phi_+dphi_*x), p_, lam_+dlam_*x, dp, dl);
+	    rpot_grad(q_, star_, spin_, set_earth(cosi_, sini_, phi_+dphi_*x), p_, lam_+dlam_*x, dp, dl);
 	    return (dp*dphi_+dl*dlam_);
 	}
     
     private:
-	double q_, cosi_, sini_;
+	double q_;
+	STAR star_;
+	double spin_, cosi_, sini_;
 	Subs::Vec3 p_;
 	double phi_, dphi_, lam_, dlam_;
     };
@@ -260,15 +279,17 @@ namespace Roche {
 	
     public:
 	
-	Rlpot(double q, const Subs::Vec3& earth, const Subs::Vec3& p) 
-	    : q_(q), earth_(earth), p_(p) {}
+	Rlpot(double q, STAR star, double spin, const Subs::Vec3& earth, const Subs::Vec3& p) 
+	    : q_(q), star_(star), spin_(spin), earth_(earth), p_(p) {}
 	
 	double operator()(double x) {
-	    return rpot_val(q_, earth_, p_, x);
+	    return rpot_val(q_, star_, spin_, earth_, p_, x);
 	}
 	
     private:
 	double q_;
+	STAR star_;
+	double spin_;
 	Subs::Vec3 earth_, p_;
     };
     
@@ -277,17 +298,19 @@ namespace Roche {
     
     public:
     
-	Dlrpot(double q, const Subs::Vec3& earth, const Subs::Vec3& p) 
-	    : q_(q), earth_(earth), p_(p) {}
+	Dlrpot(double q, STAR star, double spin, const Subs::Vec3& earth, const Subs::Vec3& p) 
+	    : q_(q), star_(star), spin_(spin), earth_(earth), p_(p) {}
     
 	double operator()(double x) {
 	    double dp, dl;
-	    rpot_grad(q_, earth_, p_, x, dp, dl);
+	    rpot_grad(q_, star_, spin_, earth_, p_, x, dp, dl);
 	    return dl;
 	}
     
     private:
 	double q_;
+	STAR star_;
+	double spin_;
 	Subs::Vec3 earth_, p_;
     };
 

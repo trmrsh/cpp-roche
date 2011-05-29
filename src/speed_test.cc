@@ -16,7 +16,7 @@ int main(){
 	r.x() = -0.5 + Subs::ran1(seed);
 	r.y() = -0.5 + Subs::ran1(seed);
 	r.z() = -0.5 + Subs::ran1(seed);
-	bool ecl = Roche::ingress_egress(q, ffac, iangle, r,  ingress, egress, 3.e-8, Roche::SECONDARY);
+	bool ecl = Roche::ingress_egress(q, Roche::SECONDARY, 1.0, ffac, iangle, 3.e-8, r,  ingress, egress);
 	//	std::cout << r << " " << ecl << " " << ingress << " " << egress << std::endl;
     }
     
