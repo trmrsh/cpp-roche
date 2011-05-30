@@ -51,6 +51,12 @@ namespace Roche {
   
     //! Computes L3 point distance from primary
     double xl3(double q);
+
+    //! Computes L1 point distance from primary when primary is asynchronous
+    double xl11(double q, double spin);
+
+    //! Computes L1 point distance from primary when secondary is asynchronous
+    double xl12(double q, double spin);
   
     //! Computes Roche potential
     double rpot(double q, const Subs::Vec3& p);
