@@ -16,9 +16,8 @@ using Subs::operator+;
  * crossing when computing eclipses. The Roche-distorted star is defined by the mass ratio
  * and the (linear) filling factor defined as the distance from the centre of mass of the star to its
  * surface in the direction of the L1 point divided by the distance to the L1 point. A filling factor
- * = 1 is Roche filling. Note that although asynchronism is allowed for, the L1 point is defined as its
- * the usual position for synchronous rotation case. This means that ffac = 1 could over or underfill if
- * spin > or < 1
+ * = 1 is Roche filling. Note that the size of the Roche lobe is calculated as appropriate given
+ * any asynchronism.
  *
  * \param q    the mass ratio = M2/M1
  * \param star specifies which star, primary or secondary is under consideration
@@ -30,10 +29,10 @@ using Subs::operator+;
 
 void Roche::ref_sphere(double q, STAR star, double spin, double ffac, double& rref, double& pref){
     if(star == PRIMARY){
-	rref = ffac*xl1(q);
+	rref = ffac*xl11(q, spin);
 	pref = rpot1(q, spin, Subs::Vec3(rref,0.,0.));
     }else if(star == SECONDARY){
-	rref = ffac*(1.-xl1(q));
+	rref = ffac*(1.-xl12(q, spin));
 	pref = rpot2(q, spin, Subs::Vec3(1.-rref,0.,0.));
     } 
 }
