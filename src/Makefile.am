@@ -38,7 +38,7 @@ libroche_la_SOURCES = blink.cc hits.cc rpot.cc gsint.cc rdot.cc strinit.cc rlobe
 xl1.cc xl2.cc xl3.cc lobe1.cc lobe2.cc flobe1.cc streamr.cc stradv.cc strmnx.cc drpot.cc vtrans.cc vlobe1.cc vlobe2.cc \
 zeta_rlobe_eggleton.cc contact.cc vstream.cc sphere_eclipse.cc ref_sphere.cc pot_min.cc rpot_val.cc rpot_grad.cc \
 rpot_val_grad.cc fblink.cc ingress_egress.cc face.cc set_earth.cc roche_shadow.cc disc_eclipse.cc stream.cc vstrreg.cc \
-jacobi.cc
+jacobi.cc xl11.cc xl12.cc
 
 
 
