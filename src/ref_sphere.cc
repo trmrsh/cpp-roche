@@ -12,12 +12,13 @@ using Subs::operator+;
 /**
  * ref_sphere computes the radius of a reference sphere just touching a Roche distorted star
  * along the line of centres and centred upon its centre of mass. This sphere, which is guaranteed
- * to enclose the equipotential inquestion can then be used to define regions for searching for equipotential
+ * to enclose the equipotential in question can then be used to define regions for searching for equipotential
  * crossing when computing eclipses. The Roche-distorted star is defined by the mass ratio
  * and the (linear) filling factor defined as the distance from the centre of mass of the star to its
  * surface in the direction of the L1 point divided by the distance to the L1 point. A filling factor
- * = 1 is Roche filling. Note that although asynchronism is allowed for, the L1 is defined as the usual 
- * synchronous rotation case.
+ * = 1 is Roche filling. Note that although asynchronism is allowed for, the L1 point is defined as its
+ * the usual position for synchronous rotation case. This means that ffac = 1 could over or underfill if
+ * spin > or < 1
  *
  * \param q    the mass ratio = M2/M1
  * \param star specifies which star, primary or secondary is under consideration

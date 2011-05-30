@@ -15,7 +15,7 @@
  * \param spin ratio of star in questions spin to the orbital frequency
  * \param dirn the direction (unit) vector from the centre of mass of the secondary to the face in question.
  * \param rref reference radius. This is a radius large enough to guarantee crossing of the reference potential. See ref_sphere
- * \param pref reference potential
+ * \param pref reference potential. This defines the precise location of the face.
  * \param acc  location accuracy (units of separation)
  * \param pvec position vector of centre of face (position vector in standard binary coordinates), returned
  * \param dvec orientation vector perpendicular to face, returned
