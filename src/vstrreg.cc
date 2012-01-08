@@ -26,7 +26,7 @@ void Roche::vstrreg(double q, double step, float *vx, float *vy, int n, int type
 !!arg{vx[]}{array of x velocities returned.}
 !!arg{vy[]}{array of y velocities returned.}
 !!arg{n}{number of points to compute.}
-!!arg{type}{type of velocity, see !!ref{vtrans,html}{vtrans} for supported types.}
+!!arg{type}{type of velocity, see !!ref{vtrans.html}{vtrans} for supported types.}
 !!table
 
 !!end
