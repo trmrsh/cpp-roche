@@ -8,7 +8,7 @@ AM_CONFIG_HEADER(config.h)
 
 dnl automake stuff
 
-AM_INIT_AUTOMAKE([roche], [1.0.9])
+AM_INIT_AUTOMAKE([roche], [1.0.10])
 
 dnl Checks for programs.
 AC_PROG_CXX
