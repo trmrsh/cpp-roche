@@ -35,6 +35,10 @@ namespace Roche {
   };
 };
 
+double cut_phase(double rxy, double rcone, double radius);
+
+Roche::CIRCLE circle_eclipse(double rxy, double z, double zcirc, double radius, double tani, double& phase);  
+
 /**
  * disc_eclipse works out phase ranges during which a cylindrically symmetric, flared disc 
  * running between a pair of radii eclipses a given point. 
@@ -52,9 +56,6 @@ namespace Roche {
 
 std::vector<std::pair<double,double> > Roche::disc_eclipse(double iangle, double rdisc1, double rdisc2, double beta, double height, const Subs::Vec3& r){
 
-  double cut_phase(double rxy, double rcone, double radius);
-  Roche::CIRCLE circle_eclipse(double rxy, double z, double zcirc, double radius, double tani, double& phase);
-  
   if(beta < 1) throw Roche_Error("Roche::disc_eclipse: beta must be >= 1");
   
   // Compute and store cosine and sine of inclination if need be.
