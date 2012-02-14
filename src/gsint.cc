@@ -3,6 +3,8 @@
 #include "trm_roche.h"
 #include "trm_subs.h"
 
+void rocder(double t, double y[], double dydt[]);
+
 // Mass ratio for communication with rocder 
 static double qp; 
 
@@ -23,7 +25,6 @@ void Roche::gsint(double q, Subs::Vec3 &r, Subs::Vec3 &v, double ttry,
 
   double y[6], dydt[6];
   static double yscal[6] = {1.0,1.0,1.0,1.0,1.0,1.0};
-  void rocder(double t, double y[], double dydt[]);
 
   // For communication with rocder 
 

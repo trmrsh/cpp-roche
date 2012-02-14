@@ -23,9 +23,10 @@ using Subs::operator+;
  * \return true/false as to whether there was a contact phase or not
  */
 
-bool Roche::fourth_contact(double q, double iangle, double rw, int ntheta, double acc, double& contact){
 
-  bool wd_is_eclipsed_at_all(double q, double iangle, double rw, int ntheta, double acc, double phase);
+bool wd_is_eclipsed_at_all(double q, double iangle, double rw, int ntheta, double acc, double phase);
+
+bool Roche::fourth_contact(double q, double iangle, double rw, int ntheta, double acc, double& contact){
 
   double p1 = 0., p2 = 0.25;
 
@@ -81,6 +82,8 @@ bool wd_is_eclipsed_at_all(double q, double iangle, double rw, int ntheta, doubl
   return false;
 }
 
+bool wd_is_eclipsed_totally(double q, double iangle, double rw, int ntheta, double acc, double phase);
+
 /**
  * third_contact computes the third contact phase of a white dwarf being eclipsed by
  * a Roche-lobe filling secondary star if there is one. 
@@ -96,8 +99,6 @@ bool wd_is_eclipsed_at_all(double q, double iangle, double rw, int ntheta, doubl
 
 bool Roche::third_contact(double q, double iangle, double rw, int ntheta, double acc, double& contact){
 
-  bool wd_is_eclipsed_totally(double q, double iangle, double rw, int ntheta, double acc, double phase);
-
   double p1 = 0., p2 = 0.25;
 
   if(!wd_is_eclipsed_totally(q,iangle,rw,ntheta,acc,p1)) return false;
@@ -112,7 +113,6 @@ bool Roche::third_contact(double q, double iangle, double rw, int ntheta, double
   }
   return true;
 }
-
 
 bool wd_is_eclipsed_totally(double q, double iangle, double rw, int ntheta, double acc, double phase){
 
