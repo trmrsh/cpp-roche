@@ -34,8 +34,8 @@ double Roche::jacobi(double q, coord r, coord v)
 */
 
 #include <math.h>
-#include "trm_roche.h"
-#include "trm_subs.h"
+#include "trm/roche.h"
+#include "trm/subs.h"
 
 double Roche::jacobi(double q, const Subs::Vec3& r, const Subs::Vec3& v){
     double f1, f2, yzsq;

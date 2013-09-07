@@ -30,8 +30,8 @@ it returns with the (distance primary --> inner lagrangian)/separation
 #include <cmath>
 #include <iostream>
 #include <string>
-#include "trm_subs.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/roche.h"
 
 /**
  * xl12 is a function which returns the distance of the L1 point from

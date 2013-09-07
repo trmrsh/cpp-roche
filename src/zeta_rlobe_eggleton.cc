@@ -1,5 +1,5 @@
 #include <math.h>
-#include "trm_roche.h"
+#include "trm/roche.h"
 
 /**
  * zeta_rlobe_eggleton returns d log(rl) / d log (m2)

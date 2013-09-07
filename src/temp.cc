@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "trm_roche.h"
+#include "trm/roche.h"
 
 int main(){
   double q = 0.7;

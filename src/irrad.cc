@@ -1,6 +1,6 @@
-#include "trm_subs.h"
-#include "trm_vec3.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/vec3.h"
+#include "trm/roche.h"
 
 /**
  * Works out whether the donor is irradiated by a given place on the

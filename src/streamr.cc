@@ -1,9 +1,9 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
-#include "trm_roche.h"
-#include "trm_vec3.h"
-#include "trm_subs.h"
+#include "trm/roche.h"
+#include "trm/vec3.h"
+#include "trm/subs.h"
 
 /**
  * streamr works by integrating the equations of motion for the Roche

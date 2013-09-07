@@ -22,11 +22,11 @@ star.
 
 #include <iostream>
 #include "cpgplot.h"
-#include "trm_subs.h"
-#include "trm_constants.h"
-#include "trm_plot.h"
-#include "trm_vec3.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/constants.h"
+#include "trm/plot.h"
+#include "trm/vec3.h"
+#include "trm/roche.h"
 
 int main(){
     Subs::Vec3 r;

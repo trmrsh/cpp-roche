@@ -39,7 +39,7 @@ void Roche::vlobe1(double q, float *vx, float *vy, int n)
 
 #include <stdlib.h>
 #include <math.h>
-#include "trm_roche.h"
+#include "trm/roche.h"
 
 void Roche::vlobe1(double q, float *vx, float *vy, int n){
 

@@ -1,10 +1,10 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
-#include "trm_subs.h"
-#include "trm_constants.h"
-#include "trm_vec3.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/constants.h"
+#include "trm/vec3.h"
+#include "trm/roche.h"
 
 /**
  * The line of sight to any fixed point in a binary sweeps out a cone at the

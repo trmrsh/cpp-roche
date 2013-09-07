@@ -28,11 +28,11 @@ This program computes the phases of third and fourth contacts of a white dwarf i
 
 #include <cstdlib>
 #include <iostream>
-#include "trm_subs.h"
-#include "trm_format.h"
-#include "trm_input.h"
-#include "trm_binary.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/format.h"
+#include "trm/input.h"
+#include "trm/binary.h"
+#include "trm/roche.h"
 
 using Subs::operator+;
 

@@ -2,9 +2,9 @@
 #include <cmath>
 #include <iostream>
 #include <string>
-#include "trm_subs.h"
-#include "trm_vec3.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/vec3.h"
+#include "trm/roche.h"
 
 /**
  * blink tests for the occultation of a point in a semi-detached

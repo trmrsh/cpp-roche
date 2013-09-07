@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <math.h>
-#include "trm_roche.h"
-#include "trm_subs.h"
+#include "trm/roche.h"
+#include "trm/subs.h"
 
 void rocder(double t, double y[], double dydt[]);
 

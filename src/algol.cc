@@ -29,10 +29,10 @@ occurs and the donor just sees the impact spot.
 #include <climits>
 #include <cstdlib>
 #include <iostream>
-#include "trm_subs.h"
-#include "trm_input.h"
-#include "trm_binary.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/input.h"
+#include "trm/binary.h"
+#include "trm/roche.h"
 
 int main (int argc, char *argv[]){
 

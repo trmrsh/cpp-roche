@@ -2,9 +2,9 @@
 #include <cmath>
 #include <iostream>
 #include <string>
-#include "trm_subs.h"
-#include "trm_vec3.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/vec3.h"
+#include "trm/roche.h"
 
 /**
  * 'face' computes the position and orientation of a face on either star in a binary assuming Roche geometry given 

@@ -1,7 +1,7 @@
 #include <cmath>
 #include <string>
-#include "trm_subs.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/roche.h"
 
 /**
  * rlobe_eggleton is a function which returns Peter Eggleton's formula

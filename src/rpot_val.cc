@@ -1,10 +1,10 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
-#include "trm_subs.h"
-#include "trm_constants.h"
-#include "trm_vec3.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/constants.h"
+#include "trm/vec3.h"
+#include "trm/roche.h"
 
 /**
  * rpot_val computes the value of the Roche potential for a specific value of phi & lambda.

@@ -29,7 +29,7 @@ Distance referred to M1. C of M of M2 = 1.
 
 #include <cstdlib>
 #include <iostream>
-#include "trm_roche.h"
+#include "trm/roche.h"
 
 int main (int argc, char *argv[]){
   if(argc < 2)

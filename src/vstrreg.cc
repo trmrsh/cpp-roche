@@ -37,8 +37,8 @@ void Roche::vstrreg(double q, double step, float *vx, float *vy, int n, int type
 #include <cmath>
 #include <string>
 #include <iostream>
-#include "trm_roche.h"
-#include "trm_subs.h"
+#include "trm/roche.h"
+#include "trm/subs.h"
 
 void Roche::vstrreg(double q, double step, float vx[], float vy[], int n, int type){
 

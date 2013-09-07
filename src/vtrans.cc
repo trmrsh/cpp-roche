@@ -44,7 +44,7 @@ mu = q/(1+q) to tvy before using it.
 #include <cmath>
 #include <string>
 #include <iostream>
-#include "trm_roche.h"
+#include "trm/roche.h"
 
 void Roche::vtrans(double q, int type, double x, double y, double vx, double vy, double &tvx, double &tvy){
 

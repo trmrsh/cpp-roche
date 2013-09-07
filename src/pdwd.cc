@@ -50,12 +50,13 @@ R = M in solar units. 'am' ==> white dwarf donor.}
 #include <iostream>
 #include <string>
 #include "cpgplot.h"
-#include "trm_subs.h"
-#include "trm_plot.h"
-#include "trm_input.h"
-#include "trm_vec3.h"
-#include "trm_binary.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/format.h"
+#include "trm/plot.h"
+#include "trm/input.h"
+#include "trm/vec3.h"
+#include "trm/binary.h"
+#include "trm/roche.h"
 
 int main (int argc, char *argv[]){
 
@@ -146,8 +147,9 @@ int main (int argc, char *argv[]){
     const float rl2    = Roche::rlobe_eggleton(q);
     const float a      = r2/rl2;
     const float period = Binary::orbital_period(m1,m2,a);
+    Subs::Format form(10);
 
-    std::cout << "Period = " << period << " seconds." << std::endl;
+    std::cout << "Period = " << form(period) << " seconds." << std::endl;
     int iperiod = int(period+0.5);
 
     // Primary star. Find potential of a point 45 degrees around

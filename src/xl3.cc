@@ -31,8 +31,8 @@ where q = M2/M1 is the mass ratio and it returns with the
 #include <cmath>
 #include <iostream>
 #include <string>
-#include "trm_subs.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/roche.h"
 
 using Subs::operator+;
 

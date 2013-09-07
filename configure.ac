@@ -24,11 +24,11 @@ AC_PROG_LIBTOOL
 
 dnl My other software
 
-AC_CHECK_HEADERS([trm_subs.h trm_position.h trm_constants.h trm_array1d.h],[],AC_MSG_ERROR(cannot find headers associated with subs))
+AC_CHECK_HEADERS([trm/subs.h trm/position.h trm/constants.h trm/array1d.h],[],AC_MSG_ERROR(cannot find headers associated with subs))
 
 AC_CHECK_LIB([subs], [main], [], AC_MSG_ERROR(cannot find the subs library))
 
-AC_CHECK_HEADERS([trm_binary.h],[],AC_MSG_ERROR(cannot find the binary header))
+AC_CHECK_HEADERS([trm/binary.h],[],AC_MSG_ERROR(cannot find the binary header))
 
 AC_CHECK_LIB([binary], [main], [],    AC_MSG_ERROR(cannot find the binary library))
 

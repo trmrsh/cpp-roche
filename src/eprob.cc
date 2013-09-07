@@ -1,8 +1,8 @@
 #include <cstdlib>
 #include <cmath>
-#include "trm_constants.h"
-#include "trm_subs.h"
-#include "trm_roche.h"
+#include "trm/constants.h"
+#include "trm/subs.h"
+#include "trm/roche.h"
 
 /**
  * eprob  computes probability that accretor is eclipsed by donor in a Roche lobe

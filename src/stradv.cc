@@ -1,9 +1,9 @@
 #include <cstdlib>
 #include <cmath>
 #include <iostream>
-#include "trm_subs.h"
-#include "trm_vec3.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/vec3.h"
+#include "trm/roche.h"
 
 
 /**

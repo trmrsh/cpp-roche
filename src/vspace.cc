@@ -39,10 +39,10 @@ over it in velocity space.
 #include <cstdlib>
 #include <cfloat>
 #include <iostream>
-#include "trm_subs.h"
-#include "trm_input.h"
-#include "trm_plot.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/input.h"
+#include "trm/plot.h"
+#include "trm/roche.h"
 
 using Subs::operator+;
 

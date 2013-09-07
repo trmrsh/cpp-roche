@@ -1,7 +1,7 @@
 #include <cmath>
-#include "trm_subs.h"
-#include "trm_vec3.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/vec3.h"
+#include "trm/roche.h"
 
 /**
  * strmnx finds the next point at which stream is closest or furthest

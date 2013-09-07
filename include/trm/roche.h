@@ -4,8 +4,8 @@
 //! \file
 
 #include <string>
-#include "trm_subs.h"
-#include "trm_vec3.h"
+#include "trm/subs.h"
+#include "trm/vec3.h"
 
 //! Roche namespace
 

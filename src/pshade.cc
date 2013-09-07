@@ -54,12 +54,12 @@
 #include <iostream>
 #include <string>
 #include "cpgplot.h"
-#include "trm_subs.h"
-#include "trm_plot.h"
-#include "trm_input.h"
-#include "trm_vec3.h"
-#include "trm_binary.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/plot.h"
+#include "trm/input.h"
+#include "trm/vec3.h"
+#include "trm/binary.h"
+#include "trm/roche.h"
 
 using Subs::operator+;
 

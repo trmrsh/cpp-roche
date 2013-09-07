@@ -1,10 +1,10 @@
 #include <cmath>
 #include <cstdlib>
 #include <iostream>
-#include "trm_subs.h"
-#include "trm_constants.h"
-#include "trm_vec3.h"
-#include "trm_roche.h"
+#include "trm/subs.h"
+#include "trm/constants.h"
+#include "trm/vec3.h"
+#include "trm/roche.h"
 
 /**
  * fblink works out whether or not a given point is eclipsed by a Roche-distorted star by searching along the line
