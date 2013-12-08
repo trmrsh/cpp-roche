@@ -1,14 +1,14 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([src/gsint.cc])
+AC_INIT([roche], [1.0.10])
+
+AC_CONFIG_SRCDIR([src/gsint.cc])
 
 dnl Get rid of all the -D stuff
-
 AM_CONFIG_HEADER(config.h)
 
 dnl automake stuff
-
-AM_INIT_AUTOMAKE([roche], [1.0.10])
+AM_INIT_AUTOMAKE
 
 dnl Checks for programs.
 AC_PROG_CXX
