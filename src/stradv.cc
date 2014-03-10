@@ -21,53 +21,60 @@
  * the point when the stream is inside the requested
  * radius. This allows one to control this. Typical
  * value = 1.e-3.
+ *
+ * Returns time step taken
  */
 
-void Roche::stradv(double q, Subs::Vec3 &r, Subs::Vec3 &v, double rad, double acc, double smax){
+double Roche::stradv(double q, Subs::Vec3 &r, Subs::Vec3 &v, double rad,
+                   double acc, double smax){
 
     const  double EPS    = 1.e-8;
     const  double TMAX   = 10.;
     static double tnext  = 1.e-2;
     double rnow, ttry, tdid, time, lo, hi, rlo, rhi, rinit;
+    double to;
     Subs::Vec3 ro, vo;
 
-    // Store initial radius 
+    // Store initial radius
     rinit = rnow = r.length();
 
-    // Step until radius crossed 
-    time  = 0.0;  
+    // Step until radius crossed
+    time  = 0.0;
     while((rinit > rad && rnow > rad) || (rinit < rad && rnow < rad)){
-	ro = r;
-	vo = v;
-	ttry = std::min(tnext, smax);
-	gsint(q, r, v, ttry, tdid, tnext, time, EPS);
-	rnow = r.length();
-	if(time > TMAX) throw Roche_Error("Roche::stradv: taken too long without crossing radius = " + Subs::str(rad) + " in Roche::stradv.\n");
+        ro = r;
+        vo = v;
+        ttry = std::min(tnext, smax);
+        gsint(q, r, v, ttry, tdid, tnext, time, EPS);
+        rnow = r.length();
+        if(time > TMAX) throw Roche_Error("Roche::stradv: taken too long without crossing radius = " + Subs::str(rad) + " in Roche::stradv.\n");
     }
-  
-    /* 
-       Now refine by reinitialising and binary chopping until
-       close enough to requested radius.
+
+    /*
+      Now refine by reinitialising and binary chopping until
+      close enough to requested radius.
     */
 
     lo  = 0.0;
     hi  = tdid;
     rlo = ro.length();
     rhi = rnow;
+    to  = time;
     while(fabs(rhi-rlo) > acc){
-	ttry   = (lo+hi)/2.;
-	r = ro;
-	v = vo;
-	gsint(q, r, v, ttry, tdid, tnext, time, EPS);
-	rnow = r.length();
-	if((rhi > rad && rnow > rad) || (rhi < rad && rnow < rad)){
-	    rhi = rnow;
-	    hi  = ttry;
-	}else{
-	    rlo = rnow;
-	    lo  = ttry;
-	}
+        ttry   = (lo+hi)/2.;
+        r = ro;
+        v = vo;
+        time = to;
+        gsint(q, r, v, ttry, tdid, tnext, time, EPS);
+        rnow = r.length();
+        if((rhi > rad && rnow > rad) || (rhi < rad && rnow < rad)){
+            rhi = rnow;
+            hi  = ttry;
+        }else{
+            rlo = rnow;
+            lo  = ttry;
+        }
     }
+    return time;
 }
 
 
