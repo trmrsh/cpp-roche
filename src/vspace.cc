@@ -245,7 +245,7 @@ int main (int argc, char *argv[]){
 
   catch(const Roche::Roche_Error& err){
     std::cerr << "Roche::Roche_Error exception:" << std::endl;
-    std::cerr << err << std::endl;
+    std::cerr << err.what() << std::endl;
     exit(EXIT_FAILURE);
   }
   catch(const std::string& err){
