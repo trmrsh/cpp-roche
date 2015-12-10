@@ -25,7 +25,7 @@ void Roche::rpot_val_grad(double q, STAR star, double spin, const Subs::Vec3& ea
                           const Subs::Vec3& p, double lam, double& rpot, double& dphi, double& dlam){
 
     if(q <= 0.)
-        throw Roche_Error("Roche::rpot_grad(double, STAR, double, const Subs::Vec3&," +
+        throw Roche_Error(Subs::str("Roche::rpot_grad(double, STAR, double, const Subs::Vec3&,") +
                           " const Subs::Vec3&, double, double& double&, double&): q = " +
                           Subs::str(q) + " <= 0.");
 

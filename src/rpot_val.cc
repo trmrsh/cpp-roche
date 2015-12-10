@@ -23,7 +23,7 @@ double Roche::rpot_val(double q, STAR star, double spin, const Subs::Vec3& earth
                        const Subs::Vec3& p, double lam){
 
     if(q <= 0.)
-        throw Roche_Error("Roche::rpot_val(double, const Subs::Vec3&" +
+        throw Roche_Error(Subs::str("Roche::rpot_val(double, const Subs::Vec3&") +
                           ", const Subs::Vec3&, double): q = " + Subs::str(q) + " <= 0.");
 
     Subs::Vec3 r = p + lam*earth;
