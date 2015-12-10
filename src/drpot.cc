@@ -42,7 +42,8 @@ Subs::Vec3 Roche::drpot1(double q, double spin, const Subs::Vec3& p){
 
     double mu, comp, r1, r2, r1sq, r2sq, mu1, ssq;
 
-  if(q <= 0.) throw Roche_Error("Roche::drpot1(double, double, const Subs::Vec3&): q = " + Subs::str(q) + " <= 0.");
+  if(q <= 0.) throw Roche_Error("Roche::drpot1(double, double, const Subs::Vec3&): q = " +
+                                Subs::str(q) + " <= 0.");
 
   r1    = sqrt(r1sq = p.sqr());
   r2    = sqrt(r2sq = r1sq + 1. - 2.*p.x());
