@@ -101,7 +101,7 @@ int main(){
 	    }
 	}
 	catch(Roche::Roche_Error err){
-	    std::cerr << "Roche::Roche_Error\n" << err << std::endl;
+	    std::cerr << "Roche::Roche_Error\n" << err.what() << std::endl;
 	}
     }
 }

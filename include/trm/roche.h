@@ -4,6 +4,8 @@
 //! \file
 
 #include <string>
+#include <exception>
+#include <stdexcept>
 #include "trm/subs.h"
 #include "trm/vec3.h"
 
@@ -32,16 +34,16 @@ namespace Roche {
     //! An exception class.
 
     /** Roche::Roche_Error is the error class for the Roche programs.
-     * It is inherited from the standard string class.
+     * It is inherited from the standard runtime_error class.
      */
-    class Roche_Error : public std::string {
+    class Roche_Error : public std::runtime_error {
     public:
 
       //! Default constructor
-    Roche_Error() : std::string() {}
+    Roche_Error() : std::runtime_error("") {}
 
       //! Constructor storing a message
-	Roche_Error(const std::string& err) : std::string(err) {}
+	Roche_Error(const std::string& err) : std::runtime_error(err.c_str()) {}
     };
 
     //! Computes L1 point distance from primary
