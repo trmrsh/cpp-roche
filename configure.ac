@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT([roche], [1.0.11])
+AC_INIT([roche], [1.0.12])
 
 AC_CONFIG_SRCDIR([src/gsint.cc])
 

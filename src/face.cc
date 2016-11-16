@@ -38,7 +38,7 @@ void Roche::face(double q, STAR star, double spin, const Subs::Vec3& dirn, doubl
 
     // A check on the reference radius & potential
     double tref = rp(q, spin, cofm + rref*dirn);
-    if(tref < pref-1.d-10*std::abs(pref))
+    if(tref < pref-1.e-10*std::abs(pref))
         throw Roche_Error("Roche::face error: point at reference radius = " + Subs::str(rref) +
                           " appears to be at lower potential = " + Subs::str(tref) + " than the reference = " + Subs::str(pref));
 
