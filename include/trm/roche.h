@@ -43,7 +43,7 @@ namespace Roche {
     Roche_Error() : std::runtime_error("") {}
 
       //! Constructor storing a message
-	Roche_Error(const std::string& err) : std::runtime_error(err.c_str()) {}
+    Roche_Error(const std::string& err) : std::runtime_error(err.c_str()) {}
     };
 
     //! Computes L1 point distance from primary
