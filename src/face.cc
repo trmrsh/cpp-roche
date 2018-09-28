@@ -7,8 +7,8 @@
 #include "trm/roche.h"
 
 /**
- * 'face' computes the position and orientation of a face on either star in a binary assuming Roche geometry given 
- * a direction, a reference radius and a potential. 
+ * 'face' computes the position and orientation of a face on either star in a binary assuming Roche geometry given
+ * a direction, a reference radius and a potential.
  *
  * \param q    the mass ratio = M2/M1.
  * \param star specifies which star, primary or secondary is under consideration.
@@ -40,7 +40,12 @@ void Roche::face(double q, STAR star, double spin, const Subs::Vec3& dirn, doubl
     double tref = rp(q, spin, cofm + rref*dirn);
     if(tref < pref)
         throw Roche_Error("Roche::face error: point at reference radius = " + Subs::str(rref) +
-                          " appears to be at lower potential = " + Subs::str(tref) + " than the reference = " + Subs::str(pref));
+                          " appears to have a lower potential = " + Subs::str(tref) +
+                          " than the reference = " + Subs::str(pref) +
+                          "\nOther params: q = " + Subs::str(q) +
+                          ", direction = (" + Subs::str(dirn.x()) +
+                          "," + Subs::str(dirn.y()) + "," +
+                          Subs::str(dirn.z()) + ")" );
 
     // Find r1 r2 such that r1 is below reference potential and r2 is above.
     double r1 = rref/2, r2 = rref;
