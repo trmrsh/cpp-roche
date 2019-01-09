@@ -21,9 +21,9 @@ pstream_SOURCES  = pstream.cc
 vspace_SOURCES   = vspace.cc
 speed_test_SOURCES = speed_test.cc
 
-INCLUDES = -I../include
+AM_CPPFLAGS = -I../include $(PCRECPP_CPPFLAGS)
 
-LDADD = libroche.la
+LDADD = libroche.la $(PCRECPP_LIBS)
 
 DATE = $(shell date)
 
