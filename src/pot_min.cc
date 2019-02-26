@@ -274,7 +274,7 @@ void Roche::linmin(double q, STAR star, double spin, double cosi, double sini,
 
             }else{
 
-                std::cerr << "Temporary diagnostics" << std::endl;
+                std::cerr << "Diagnostics" << std::endl;
                 std::cerr << "xb,xc,db,dc= " << xb << "," << xc << "," << db
                           << "," << dc << std::endl;
                 std::cerr << "q,ci,si,p = " << q << ", " << cosi << ", " << sini
@@ -382,6 +382,23 @@ void Roche::linmin(double q, STAR star, double spin, double cosi, double sini,
             if(!bracketted){
 
                 if(dfunc(xc) > 0.){
+
+                    std::cerr << "Diagnostics" << std::endl;
+                    std::cerr << "xb,xc,db,dc= " << xb << "," << xc << "," << db
+                              << "," << dc << std::endl;
+                    std::cerr << "q,ci,si,p = " << q << ", " << cosi << ", " << sini
+                              << ", " << p << std::endl;
+                    std::cerr << "phi, lam, dphi, dlam = " << phi << ", " << lam
+                              << ", " << dphi << ", " << dlam << std::endl;
+                    std::cerr << "phi1,phi2,lam1,lam2 = " << phi1 << ", " << phi2
+                              << ", " << lam1 << ", " << lam2 << std::endl;
+                    std::cerr << "pref, acc = " << pref << ", " << acc << std::endl;
+                    for(int i=0; i<=50; i++){
+                        xb = xmax*i/50.;
+                        std::cerr << i << " " << xb << " " << func(xb) << " "
+                                  << dfunc(xb) << std::endl;
+                    }
+
                     throw Roche_Error("Roche::linmin failed to bracket minimum, error 2");
                 }else{
                     phi  += dphi*xmax;
