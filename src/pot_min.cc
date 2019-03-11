@@ -384,8 +384,8 @@ void Roche::linmin(double q, STAR star, double spin, double cosi, double sini,
                 if(dfunc(xc) > 0.){
 
                     std::cerr << "Diagnostics" << std::endl;
-                    std::cerr << "xb,xc,db,dc= " << xb << "," << xc << "," << db
-                              << "," << dc << std::endl;
+                    std::cerr << "xb,xc,fb,fc= " << xb << "," << xc << ","
+                              << "," << fb << "," << fc << std::endl;
                     std::cerr << "q,ci,si,p = " << q << ", " << cosi << ", " << sini
                               << ", " << p << std::endl;
                     std::cerr << "phi, lam, dphi, dlam = " << phi << ", " << lam
